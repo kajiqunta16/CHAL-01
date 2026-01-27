@@ -3,12 +3,12 @@ const userModel = require('../models/user-model');
 // User registration
 exports.register = async (req, res) => {
     try {
-        const { name, email, password, confirmpassword } = req.body;
-        const user = new userModel({ name, email, password, confirmpassword });
+        const { username, email, password, confirmpassword } = req.body;
+        const user = new userModel({ username, email, password, confirmpassword });
         if (password !== confirmpassword) {
             return res.status(400).json({ error: 'Passwords do not match' });
         }
-        const passwordHash = await bcrypt.hash(password, 30);
+        const passwordHash = await bcrypt.hash(password, 10);
         user.password = passwordHash;
         await user.save();
         res.status(201).json(user);
