@@ -4,10 +4,10 @@ const userController = require('../controllers/user-controller');
 
 
 // User registration
-router.post('/register', userController.registerUser);
+router.post('/register', userController.register);
 
 // User login
-router.post('/login', userController.loginUser);
+router.post('/login', userController.login);
 
 // Get user profile
 router.get('/:userId', userController.getUserProfile);
