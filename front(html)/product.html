@@ -4,32 +4,395 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- displays site properly based on user's device -->
+    <link rel="icon" href="images/favicon-32x32.png" type="image/png">
+    <title>Sneakers</title>
 
-    <link rel="icon" type="image/png" sizes="32x32" href="./images/favicon-32x32.png">
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 
-    <title>Frontend Mentor | E-commerce product page</title>
-
-    <!-- Feel free to remove these styles or customise in your own stylesheet 👍 -->
-    <style>
-        .attribution {
-            font-size: 11px;
-            text-align: center;
-        }
-
-        .attribution a {
-            color: hsl(228, 45%, 44%);
-        }
-    </style>
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="style.css">
 </head>
 
-
 <body>
+    <!-- ================= NAVBAR ================= -->
+    <div class="container-fluid bg-white sticky-top border-bottom">
+        <div class="container">
+            <nav class="navbar navbar-expand-lg navbar-light py-3">
 
-    <div class="attribution">
-        Challenge by <a href="https://www.frontendmentor.io?ref=challenge" target="_blank">Frontend Mentor</a>.
-        Coded by <a href="#">Your Name Here</a>.
+                <!-- Toggler button - moved to the left -->
+                <button class="navbar-toggler order-0 me-3" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#navbarCollapse">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <a href="#" class="navbar-brand order-1">
+                    <img src="images/logo.svg" class="logo" alt="Logo">
+                </a>
+
+                <!-- Cart and Avatar - Always visible -->
+                <div class="d-flex align-items-center gap-4 ms-auto order-2 order-lg-3">
+                    <div class="cart-container">
+                        <img onclick="toggleCart()" src="images/icon-cart.svg" class="cart-icon" alt="Cart">
+                        <span class="cart-count" id="cartCount">0</span>
+
+                        <!-- Cart Dropdown -->
+                        <div class="cart-dropdown" id="cartDropdown">
+                            <div class="cart-header">
+                                <h3>Cart</h3>
+                            </div>
+                            <div class="cart-body" id="cartBody">
+                                <p class="empty-cart">Your cart is empty.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Avatar with Dropdown -->
+                    <div class="avatar-container">
+                        <img src="images/image-avatar.png" class="avatar" alt="Avatar" onclick="toggleProfileMenu()">
+
+                        <!-- Profile Dropdown -->
+                        <div class="profile-dropdown" id="profileDropdown">
+                            <div class="profile-header">
+                                <img src="images/image-avatar.png" class="profile-avatar" alt="Avatar">
+                                <div class="profile-info">
+                                    <h4>John Doe</h4>
+                                    <p>john.doe@example.com</p>
+                                </div>
+                            </div>
+                            <div class="profile-menu">
+                                <button class="profile-menu-item" onclick="goToOrders()">
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                        stroke-width="2">
+                                        <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
+                                        <circle cx="9" cy="7" r="4"></circle>
+                                        <polyline points="16 11 18 13 22 9"></polyline>
+                                    </svg>
+                                    My Orders
+                                </button>
+                                <button class="profile-menu-item logout" onclick="logout()">
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                        stroke-width="2">
+                                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                                        <polyline points="16 17 21 12 16 7"></polyline>
+                                        <line x1="21" y1="12" x2="9" y2="12"></line>
+                                    </svg>
+                                    Logout
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Collapsible Navigation Menu -->
+                <div class="collapse navbar-collapse order-3 order-lg-2" id="navbarCollapse">
+                    <!-- Close button for mobile -->
+                    <button class="close-menu d-lg-none" id="closeMenuBtn">
+                        <img src="images/icon-close.svg" alt="Close">
+                    </button>
+
+                    <ul class="navbar-nav">
+                        <li class="nav-item"><a class="nav-link active" href="#">Collections</a></li>
+                        <li class="nav-item"><a class="nav-link" href="#">Men</a></li>
+                        <li class="nav-item"><a class="nav-link" href="#">Women</a></li>
+                        <li class="nav-item"><a class="nav-link" href="#">About</a></li>
+                        <li class="nav-item"><a class="nav-link" href="#">Contact</a></li>
+                    </ul>
+                </div>
+
+            </nav>
+        </div>
     </div>
+
+    <!-- ================= PRODUCT SECTION ================= -->
+    <div class="container product-section">
+        <div class="row d-flex align-items-center">
+
+            <!-- LEFT: IMAGES -->
+            <div class="justify-content-left col-lg-6 product-images">
+                <!-- Mobile Carousel -->
+                <div class="mobile-carousel d-lg-none">
+                    <button class="carousel-nav prev" id="prevBtn">
+                        <img src="images/icon-previous.svg" alt="Previous">
+                    </button>
+                    <img src="images/image-product-1.jpg" class="product-main-mobile" id="mainImage" alt="Product">
+                    <button class="carousel-nav next" id="nextBtn">
+                        <img src="images/icon-next.svg" alt="Next">
+                    </button>
+                </div>
+
+                <!-- Desktop View -->
+                <div class="desktop-images d-none d-lg-block">
+                    <img src="images/image-product-1.jpg" class="product-main mb-4" alt="Product">
+
+                    <div class="d-flex gap-3">
+                        <img src="images/image-product-1-thumbnail.jpg" class="thumb active">
+                        <img src="images/image-product-2-thumbnail.jpg" class="thumb">
+                        <img src="images/image-product-3-thumbnail.jpg" class="thumb">
+                        <img src="images/image-product-4-thumbnail.jpg" class="thumb">
+                    </div>
+                </div>
+            </div>
+
+            <!-- RIGHT: DETAILS -->
+            <div class="justify-content-right col-lg-6 product-details">
+                <small class="company">SNEAKER COMPANY</small>
+                <h1>Fall Limited Edition Sneakers</h1>
+
+                <p class="description">
+                    These low-profile sneakers are your perfect casual wear companion.
+                    Featuring a durable rubber outer sole, they'll withstand everything
+                    the weather can offer.
+                </p>
+
+                <div class="price-box">
+                    <span class="price">$125.00</span>
+                    <span class="discount">50%</span>
+                </div>
+                <span class="old-price">$250.00</span>
+
+                <div class="cart-actions">
+                    <div class="quantity">
+                        <button>-</button>
+                        <span>0</span>
+                        <button>+</button>
+                    </div>
+
+                    <button class="add-to-cart">
+                        <img src="images/icon-cart.svg">
+                        Add to cart
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Cart data
+        let cart = [];
+
+        // Toggle cart dropdown
+        function toggleCart() {
+            const cartDropdown = document.getElementById('cartDropdown');
+            const profileDropdown = document.getElementById('profileDropdown');
+
+            // Close profile menu if open
+            profileDropdown.classList.remove('show');
+
+            cartDropdown.classList.toggle('show');
+        }
+
+        // Toggle profile menu
+        function toggleProfileMenu() {
+            const profileDropdown = document.getElementById('profileDropdown');
+            const cartDropdown = document.getElementById('cartDropdown');
+
+            // Close cart if open
+            cartDropdown.classList.remove('show');
+
+            profileDropdown.classList.toggle('show');
+        }
+
+        // Go to orders page
+        function goToOrders() {
+            // Replace with your actual orders page URL
+            window.location.href = '/orders';
+            // Or use: alert('Redirecting to orders page...');
+        }
+
+        // Logout function
+        function logout() {
+            if (confirm('Are you sure you want to logout?')) {
+                // Add your logout logic here
+                // For example: clear session, redirect to login page
+                alert('Logging out...');
+                // window.location.href = '/login';
+            }
+        }
+
+        // Close dropdowns when clicking outside
+        document.addEventListener('click', function (event) {
+            const cartContainer = document.querySelector('.cart-container');
+            const cartDropdown = document.getElementById('cartDropdown');
+            const avatarContainer = document.querySelector('.avatar-container');
+            const profileDropdown = document.getElementById('profileDropdown');
+
+            // Close cart
+            if (cartContainer && !cartContainer.contains(event.target) && cartDropdown.classList.contains('show')) {
+                cartDropdown.classList.remove('show');
+            }
+
+            // Close profile menu
+            if (avatarContainer && !avatarContainer.contains(event.target) && profileDropdown.classList.contains('show')) {
+                profileDropdown.classList.remove('show');
+            }
+        });
+
+        // Update cart display
+        function updateCart() {
+            const cartBody = document.getElementById('cartBody');
+            const cartCount = document.getElementById('cartCount');
+
+            if (cart.length === 0) {
+                cartBody.innerHTML = '<p class="empty-cart">Your cart is empty.</p>';
+                cartCount.classList.remove('show');
+            } else {
+                let cartHTML = '';
+                let totalItems = 0;
+
+                cart.forEach((item, index) => {
+                    totalItems += item.quantity;
+                    const total = (item.price * item.quantity).toFixed(2);
+
+                    cartHTML += `
+                <div class="cart-item">
+                    <img src="${item.image}" class="cart-item-image" alt="${item.name}">
+                    <div class="cart-item-details">
+                        <div class="cart-item-name">${item.name}</div>
+                        <div class="cart-item-price">
+                            $${item.price.toFixed(2)} x ${item.quantity} <span class="total">$${total}</span>
+                        </div>
+                    </div>
+                    <button class="cart-item-delete" onclick="removeFromCart(${index})">
+                        <img src="images/icon-delete.svg" alt="Delete">
+                    </button>
+                </div>
+            `;
+                });
+
+                cartHTML += '<button class="checkout-btn">Checkout</button>';
+                cartBody.innerHTML = cartHTML;
+                cartCount.textContent = totalItems;
+                cartCount.classList.add('show');
+            }
+        }
+
+        // Add to cart
+        function addToCart() {
+            const quantity = parseInt(document.querySelector('.quantity span').textContent);
+
+            if (quantity === 0) {
+                alert('Please select a quantity');
+                return;
+            }
+
+            const item = {
+                name: 'Fall Limited Edition Sneakers',
+                price: 125.00,
+                quantity: quantity,
+                image: 'images/image-product-1-thumbnail.jpg'
+            };
+
+            // Check if item already exists
+            const existingItem = cart.find(cartItem => cartItem.name === item.name);
+
+            if (existingItem) {
+                existingItem.quantity += quantity;
+            } else {
+                cart.push(item);
+            }
+
+            updateCart();
+
+            // Show cart dropdown
+            document.getElementById('cartDropdown').classList.add('show');
+        }
+
+        // Remove from cart
+        function removeFromCart(index) {
+            cart.splice(index, 1);
+            updateCart();
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            // Image carousel code for mobile
+            const images = [
+                'images/image-product-1.jpg',
+                'images/image-product-2.jpg',
+                'images/image-product-3.jpg',
+                'images/image-product-4.jpg'
+            ];
+
+            let currentIndex = 0;
+            const mainImage = document.getElementById('mainImage');
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+
+            if (prevBtn && nextBtn && mainImage) {
+                prevBtn.addEventListener('click', function () {
+                    currentIndex = (currentIndex - 1 + images.length) % images.length;
+                    mainImage.src = images[currentIndex];
+                });
+
+                nextBtn.addEventListener('click', function () {
+                    currentIndex = (currentIndex + 1) % images.length;
+                    mainImage.src = images[currentIndex];
+                });
+            }
+
+            // Thumbnail hover functionality for desktop
+            const thumbnails = document.querySelectorAll('.thumb');
+            const productMain = document.querySelector('.product-main');
+
+            thumbnails.forEach((thumb, index) => {
+                thumb.addEventListener('mouseenter', function () {
+                    thumbnails.forEach(t => t.classList.remove('active'));
+                    this.classList.add('active');
+                    if (productMain) {
+                        productMain.src = images[index];
+                    }
+                });
+            });
+
+            // Quantity controls
+            const quantityDisplay = document.querySelector('.quantity span');
+            const minusBtn = document.querySelector('.quantity button:first-child');
+            const plusBtn = document.querySelector('.quantity button:last-child');
+
+            if (minusBtn && plusBtn && quantityDisplay) {
+                minusBtn.addEventListener('click', function () {
+                    let quantity = parseInt(quantityDisplay.textContent);
+                    if (quantity > 0) {
+                        quantityDisplay.textContent = quantity - 1;
+                    }
+                });
+
+                plusBtn.addEventListener('click', function () {
+                    let quantity = parseInt(quantityDisplay.textContent);
+                    quantityDisplay.textContent = quantity + 1;
+                });
+            }
+
+            // Add to cart button
+            const addToCartBtn = document.querySelector('.add-to-cart');
+            if (addToCartBtn) {
+                addToCartBtn.addEventListener('click', addToCart);
+            }
+
+            // Navbar collapse functionality
+            const navbarCollapse = document.getElementById('navbarCollapse');
+            const closeMenuBtn = document.getElementById('closeMenuBtn');
+            const navbarToggler = document.querySelector('.navbar-toggler');
+
+            if (closeMenuBtn) {
+                closeMenuBtn.addEventListener('click', function () {
+                    const bsCollapse = bootstrap.Collapse.getInstance(navbarCollapse) || new bootstrap.Collapse(navbarCollapse, { toggle: false });
+                    bsCollapse.hide();
+                });
+            }
+
+            document.addEventListener('click', function (event) {
+                if (navbarCollapse && navbarCollapse.classList.contains('show')) {
+                    if (!navbarCollapse.contains(event.target) && navbarToggler && !navbarToggler.contains(event.target)) {
+                        const bsCollapse = bootstrap.Collapse.getInstance(navbarCollapse) || new bootstrap.Collapse(navbarCollapse, { toggle: false });
+                        bsCollapse.hide();
+                    }
+                }
+            });
+        });
+    </script>
 </body>
 
 </html>
