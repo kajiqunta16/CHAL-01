@@ -3,17 +3,40 @@ const userModel = require('../models/user-model');
 // User registration
 exports.register = async (req, res) => {
     try {
-        const { username, email, password, confirmpassword } = req.body;
-        const user = new userModel({ username, email, password, confirmpassword });
-        if (password !== confirmpassword) {
-            return res.status(400).json({ error: 'Passwords do not match' });
+        const { username, email, password, confirmPassword } = req.body;
+
+        if (!username || !email || !password || !confirmPassword) {
+            return res.status(400).json({ error: "All fields are required" });
         }
+
+        if (password !== confirmPassword) {
+            return res.status(400).json({ error: "Passwords do not match" });
+        }
+
+        const existingUser = await userModel.findOne({
+            $or: [{ email }, { username }]
+        });
+
+        if (existingUser) {
+            return res.status(409).json({ error: "User already exists" });
+        }
+
         const passwordHash = await bcrypt.hash(password, 10);
-        user.password = passwordHash;
+
+        const user = new userModel({
+            username,
+            email,
+            password: passwordHash
+        });
+
         await user.save();
-        res.status(201).json(user);
+
+        res.status(201).json({
+            message: "User registered successfully"
+        });
     } catch (err) {
-        res.status(400).json({ error: err.message });
+        console.error(err);
+        res.status(500).json({ error: "Server error" });
     }
 };
 
@@ -22,10 +45,21 @@ exports.login = async (req, res) => {
     try {
         const { email, password } = req.body;
         const user = await userModel.findOne({ email });
-        if (!user || !(await user.comparePassword(password))) {
-            return res.status(401).json({ error: 'Invalid credentials' });
+
+        if (!user) {
+            return res.status(401).json({ error: "Invalid credentials" });
         }
-        res.json(user);
+
+        const isMatch = await bcrypt.compare(password, user.password);
+        if (!isMatch) {
+            return res.status(401).json({ error: "Invalid credentials" });
+        }
+
+        res.json({
+            id: user._id,
+            username: user.username,
+            email: user.email
+        });
     } catch (err) {
         res.status(400).json({ error: err.message });
     }
@@ -37,7 +71,11 @@ exports.getUserProfile = async (req, res) => {
         if (!user) {
             return res.status(404).json({ error: 'User not found' });
         }
-        res.json(user);
+        res.json({
+            id: user._id,
+            username: user.username,
+            email: user.email
+        });
     } catch (err) {
         res.status(400).json({ error: err.message });
     }
@@ -51,7 +89,11 @@ exports.updateUserProfile = async (req, res) => {
         if (!user) {
             return res.status(404).json({ error: 'User not found' });
         }
-        res.json(user);
+        res.json({
+            id: user._id,
+            username: user.username,
+            email: user.email
+        });
     } catch (err) {
         res.status(400).json({ error: err.message });
     }
@@ -77,7 +119,7 @@ exports.changeUserPassword = async (req, res) => {
         if (!user || !(await user.comparePassword(oldPassword))) {
             return res.status(401).json({ error: 'Invalid credentials' });
         }
-        const newHashedPassword = await bcrypt.hash(newPassword, 30);
+        const newHashedPassword = await bcrypt.hash(newPassword, 10);
         user.password = newHashedPassword;
         await user.save();
         res.json({ message: 'Password changed successfully' });
