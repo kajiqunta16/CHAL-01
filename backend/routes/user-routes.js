@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const auth = require('../middleware/auth');
 const userController = require('../controllers/user-controller');
 
 
@@ -10,14 +11,14 @@ router.post('/register', userController.register);
 router.post('/login', userController.login);
 
 // Get user profile
-router.get('/:userId', userController.getUserProfile);
+router.get('/:userId',auth, userController.getUserProfile);
 
 // Update user profile
-router.put('/:userId', userController.updateUserProfile);
+router.put('/:userId',auth, userController.updateUserProfile);
 
 // Delete user account
-router.delete('/:userId', userController.deleteUserAccount);
+router.delete('/:userId',auth, userController.deleteUserAccount);
 
 // Change user password
-router.put('/:userId/change-password', userController.changeUserPassword);
+router.put('/:userId/change-password', auth, userController.changeUserPassword);
 module.exports = router;
