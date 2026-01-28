@@ -1,5 +1,6 @@
 const express = require('express');
 const mongoose = require('mongoose');
+const cors = require('cors');
 const bodyParser = require('body-parser');
 
 const userRoutes = require('./routes/user-routes');
@@ -19,6 +20,7 @@ mongoose.connect(process.env.MONGODB_URI, {
     console.error('Error connecting to MongoDB', err);
 });
 
+app.use(cors());
 app.use(bodyParser.json());
 
 app.use('/api/users', userRoutes);

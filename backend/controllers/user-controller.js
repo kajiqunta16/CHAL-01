@@ -22,15 +22,14 @@ exports.register = async (req, res) => {
             return res.status(409).json({ error: "User already exists" });
         }
 
-        const passwordHash = await bcrypt.hash(password, 10);
-
+        // Don't manually hash - let pre('save') hook handle it
         const user = new userModel({
             username,
             email,
-            password: passwordHash
+            password  // Just pass plain password
         });
 
-        await user.save();
+        await user.save(); // pre('save') hook will hash it
 
         res.status(201).json({
             message: "User registered successfully"
@@ -108,7 +107,6 @@ exports.updateUserProfile = async (req, res) => {
             return res.status(404).json({ error: 'User not found' });
         }
         res.json({
-            id: user._id,
             username: user.username,
             email: user.email
         });
@@ -129,17 +127,26 @@ exports.deleteUserAccount = async (req, res) => {
         res.status(400).json({ error: err.message });
     }
 };
+
 // Change user password
 exports.changeUserPassword = async (req, res) => {
     try {
         const { oldPassword, newPassword } = req.body;
         const user = await userModel.findById(req.params.userId);
-        if (!user || !(await user.comparePassword(oldPassword))) {
-            return res.status(401).json({ error: 'Invalid credentials' });
+
+        if (!user) {
+            return res.status(404).json({ error: 'User not found' });
         }
-        const newHashedPassword = await bcrypt.hash(newPassword, 10);
-        user.password = newHashedPassword;
+
+        const isMatch = await user.comparePassword(oldPassword);
+        if (!isMatch) {
+            return res.status(401).json({ error: 'Invalid old password' });
+        }
+
+        // Just set the new password, pre('save') will hash it
+        user.password = newPassword;
         await user.save();
+
         res.json({ message: 'Password changed successfully' });
     } catch (err) {
         res.status(400).json({ error: err.message });
