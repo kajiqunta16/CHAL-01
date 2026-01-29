@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "./Header.css";
 import logo from "../images/logo.svg";
 import cartIcon from "../images/icon-cart.svg";
@@ -8,23 +8,32 @@ import avatarImage from "../images/image-avatar.png";
 export function Header() {
     const [isCartOpen, setIsCartOpen] = useState(false);
     const [isProfileOpen, setIsProfileOpen] = useState(false);
+    const navigate = useNavigate();
 
     const cartRef = useRef(null);
     const profileRef = useRef(null);
 
-    const toggleCart = () => {
+    const toggleCart = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        console.log("Cart clicked");
         setIsCartOpen(prev => !prev);
         setIsProfileOpen(false);
     };
 
-    const toggleProfileMenu = () => {
+    const toggleProfileMenu = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        console.log("Avatar clicked");
         setIsProfileOpen(prev => !prev);
         setIsCartOpen(false);
     };
 
     const logout = () => {
         localStorage.removeItem("token");
-        alert("Logging out...");
+        localStorage.removeItem("user");
+        setIsProfileOpen(false);
+        navigate("/login");
     };
 
     // Close dropdowns when clicking outside
@@ -72,6 +81,7 @@ export function Header() {
                                 className="cart-icon"
                                 alt="Cart"
                                 onClick={toggleCart}
+                                style={{ pointerEvents: 'auto' }}
                             />
                             <span className="cart-count">0</span>
 
@@ -94,6 +104,7 @@ export function Header() {
                                 className="avatar"
                                 alt="Avatar"
                                 onClick={toggleProfileMenu}
+                                style={{ pointerEvents: 'auto' }}
                             />
 
                             {isProfileOpen && (

@@ -12,6 +12,17 @@
     text-align: center;
 }
 
+.debug-info {
+    text-align: center;
+    padding: 10px;
+    background-color: #e7f3ff;
+    border: 1px solid #b3d9ff;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    color: #0066cc;
+    font-weight: 500;
+}
+
 .loading-message,
 .error-message,
 .no-products-message {

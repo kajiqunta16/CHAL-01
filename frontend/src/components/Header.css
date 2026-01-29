@@ -23,11 +23,14 @@
 /* Cart Container */
 .cart-container {
     position: relative;
+    display: inline-block;
 }
 
 .cart-icon {
     width: 22px;
     cursor: pointer;
+    user-select: none;
+    pointer-events: auto;
 }
 
 .cart-count {
@@ -57,10 +60,6 @@
     border-radius: 10px;
     box-shadow: 0 10px 50px rgba(0, 0, 0, 0.2);
     z-index: 1000;
-    display: none;
-}
-
-.cart-dropdown.show {
     display: block;
 }
 
@@ -157,6 +156,7 @@
 /* Avatar Container */
 .avatar-container {
     position: relative;
+    display: inline-block;
 }
 
 .avatar {
@@ -166,6 +166,8 @@
     border: 2px solid transparent;
     cursor: pointer;
     object-fit: cover;
+    user-select: none;
+    pointer-events: auto;
 }
 
 .avatar:hover {
@@ -182,10 +184,6 @@
     border-radius: 10px;
     box-shadow: 0 10px 50px rgba(0, 0, 0, 0.2);
     z-index: 1000;
-    display: none;
-}
-
-.profile-dropdown.show {
     display: block;
 }
 

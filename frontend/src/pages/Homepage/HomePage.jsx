@@ -12,12 +12,19 @@ export function HomePage() {
         const fetchProducts = async () => {
             try {
                 setLoading(true);
-                const response = await api.get("/products/");
+                const response = await api.get("/products");
+                console.log("Products API Response:", response.data);
                 setProducts(response.data);
                 setError("");
             } catch (err) {
-                setError(err.response?.data?.error || "Failed to load products");
+                const errorMessage = err.response?.data?.error || err.message || "Failed to load products";
+                setError(errorMessage);
                 console.error("Error fetching products:", err);
+                console.error("Error details:", {
+                    status: err.response?.status,
+                    data: err.response?.data,
+                    message: err.message
+                });
             } finally {
                 setLoading(false);
             }
@@ -48,23 +55,28 @@ export function HomePage() {
                     )}
                     
                     {!loading && !error && products.length > 0 && (
-                        <div className="products-grid">
-                            {products.map((product) => (
-                                <div key={product._id} className="product-card">
-                                    <div className="product-info">
-                                        <h3 className="product-name">{product.name}</h3>
-                                        <p className="product-description">{product.description}</p>
-                                        <div className="product-details">
-                                            <span className="product-category">{product.category}</span>
-                                            <span className={`product-stock ${product.stock === 0 ? 'out-of-stock' : ''}`}>
-                                                {product.stock > 0 ? `In Stock (${product.stock})` : "Out of Stock"}
-                                            </span>
+                        <>
+                            <div className="debug-info">
+                                <p>Total products loaded: {products.length}</p>
+                            </div>
+                            <div className="products-grid">
+                                {products.map((product) => (
+                                    <div key={product._id} className="product-card">
+                                        <div className="product-info">
+                                            <h3 className="product-name">{product.name}</h3>
+                                            <p className="product-description">{product.description}</p>
+                                            <div className="product-details">
+                                                <span className="product-category">{product.category}</span>
+                                                <span className={`product-stock ${product.stock === 0 ? 'out-of-stock' : ''}`}>
+                                                    {product.stock > 0 ? `In Stock (${product.stock})` : "Out of Stock"}
+                                                </span>
+                                            </div>
+                                            <div className="product-price">${product.price.toFixed(2)}</div>
                                         </div>
-                                        <div className="product-price">${product.price.toFixed(2)}</div>
                                     </div>
-                                </div>
-                            ))}
-                        </div>
+                                ))}
+                            </div>
+                        </>
                     )}
                 </div>
             </div>
