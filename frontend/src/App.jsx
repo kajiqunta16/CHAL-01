@@ -1,14 +1,11 @@
 import { useState, useEffect } from 'react'
 import { Routes, Route, Navigate } from 'react-router-dom'
-import { api, getUserIdFromToken } from './config/api'
-import { Product } from './pages/Product/Product'
 import { HomePage } from './pages/Homepage/HomePage.jsx'
 import { LoginPage } from './pages/Login/LoginPage'
 import { RegisterPage } from './pages/Register/RegisterPage.jsx'
 import './App.css'
 
 function App() {
-  const [cart, setCart] = useState([]);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [loading, setLoading] = useState(true);
 
@@ -18,24 +15,6 @@ function App() {
     setIsAuthenticated(!!token);
     setLoading(false);
   }, []);
-
-  const loadCart = async () => {
-    const userId = getUserIdFromToken();
-    if (!userId) return;
-
-    try {
-      const response = await api.get(`/cart/${userId}`);
-      setCart(response.data);
-    } catch (error) {
-      console.error('Error loading cart:', error);
-    }
-  };
-
-  useEffect(() => {
-    if (isAuthenticated) {
-      loadCart();
-    }
-  }, [isAuthenticated]);
 
   // Protected Route Component
   const ProtectedRoute = ({ children }) => {
@@ -56,7 +35,6 @@ function App() {
         element={
           <ProtectedRoute>
             <HomePage />
-            <Product cart={cart} loadCart={loadCart} />
           </ProtectedRoute>
         }
       />

@@ -1,8 +1,11 @@
 import { useState, useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
-import "./HomePage.css";
+import "./Header.css";
+import logo from "../images/logo.svg";
+import cartIcon from "../images/icon-cart.svg";
+import avatarImage from "../images/image-avatar.png";
 
-export function HomePage() {
+export function Header() {
     const [isCartOpen, setIsCartOpen] = useState(false);
     const [isProfileOpen, setIsProfileOpen] = useState(false);
 
@@ -57,7 +60,7 @@ export function HomePage() {
                     </button>
 
                     <Link to="/" className="navbar-brand order-1">
-                        <img src="images/logo.svg" className="logo" alt="Logo" />
+                        <img src={logo} className="logo" alt="Logo" />
                     </Link>
 
                     <div className="d-flex align-items-center gap-4 ms-auto order-2 order-lg-3">
@@ -65,7 +68,7 @@ export function HomePage() {
                         {/* CART */}
                         <div className="cart-container" ref={cartRef}>
                             <img
-                                src="images/icon-cart.svg"
+                                src={cartIcon}
                                 className="cart-icon"
                                 alt="Cart"
                                 onClick={toggleCart}
@@ -87,7 +90,7 @@ export function HomePage() {
                         {/* PROFILE */}
                         <div className="avatar-container" ref={profileRef}>
                             <img
-                                src="images/image-avatar.png"
+                                src={avatarImage}
                                 className="avatar"
                                 alt="Avatar"
                                 onClick={toggleProfileMenu}
@@ -97,7 +100,7 @@ export function HomePage() {
                                 <div className="profile-dropdown">
                                     <div className="profile-header">
                                         <img
-                                            src="images/image-avatar.png"
+                                            src={avatarImage}
                                             className="profile-avatar"
                                             alt="Avatar"
                                         />
