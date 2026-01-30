@@ -47,11 +47,19 @@ function App() {
       <Route path="/login" element={<LoginPage setIsAuthenticated={setIsAuthenticated} />} />
       <Route path="/register" element={<RegisterPage />} />
       <Route
+        path="/product/:productId"
+        element={
+          <ProtectedRoute>
+            <Product loadCart={loadCart} />
+          </ProtectedRoute>
+        }
+      />
+      <Route
         path="/"
         element={
           <ProtectedRoute>
             <HomePage />
-            <Product loadCart={loadCart} />
+            
           </ProtectedRoute>
         }
       />
