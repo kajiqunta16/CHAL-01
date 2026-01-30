@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { Routes, Route, Navigate } from 'react-router-dom'
 import { api, getUserIdFromToken } from './config/api'
 import { HomePage } from './pages/Homepage/HomePage.jsx'
-import { LoginPage } from './pages/Login/LoginPage'
+import { LoginPage } from './pages/Login/LoginPage.jsx'
 import { RegisterPage } from './pages/Register/RegisterPage.jsx'
 import { Product } from './pages/Product/product.jsx'
 import './App.css'
@@ -58,7 +58,7 @@ function App() {
         path="/"
         element={
           <ProtectedRoute>
-            <HomePage />
+            <HomePage loadCart={loadCart} />
             
           </ProtectedRoute>
         }
