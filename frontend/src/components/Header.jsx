@@ -1,11 +1,13 @@
 import { useState, useRef, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { api, getUserIdFromToken } from "../config/api";
 import "./Header.css";
 import logo from "../images/logo.svg";
 import cartIcon from "../images/icon-cart.svg";
 import avatarImage from "../images/image-avatar.png";
+import deleteIcon from "../images/icon-delete.svg";
 
-export function Header() {
+export function Header({ cartItems = [] }) {
     const [isCartOpen, setIsCartOpen] = useState(false);
     const [isProfileOpen, setIsProfileOpen] = useState(false);
     const navigate = useNavigate();
@@ -13,10 +15,11 @@ export function Header() {
     const cartRef = useRef(null);
     const profileRef = useRef(null);
 
+    const cartCount = cartItems.reduce((total, item) => total + item.quantity, 0);
+
     const toggleCart = (e) => {
         e.preventDefault();
         e.stopPropagation();
-        console.log("Cart clicked");
         setIsCartOpen(prev => !prev);
         setIsProfileOpen(false);
     };
@@ -24,9 +27,20 @@ export function Header() {
     const toggleProfileMenu = (e) => {
         e.preventDefault();
         e.stopPropagation();
-        console.log("Avatar clicked");
         setIsProfileOpen(prev => !prev);
         setIsCartOpen(false);
+    };
+
+    const removeFromCart = async (productId) => {
+        const userId = getUserIdFromToken();
+        if (!userId) return;
+
+        try {
+            await api.post('/cart/remove', { userId, productId });
+            window.location.reload(); // Reload to refresh cart
+        } catch (error) {
+            console.error('Error removing from cart:', error);
+        }
     };
 
     const logout = () => {
@@ -36,7 +50,6 @@ export function Header() {
         navigate("/login");
     };
 
-    // Close dropdowns when clicking outside
     useEffect(() => {
         const handleClickOutside = (e) => {
             if (
@@ -58,7 +71,6 @@ export function Header() {
         <div className="container-fluid bg-white sticky-top border-bottom">
             <div className="container">
                 <nav className="navbar navbar-expand-lg navbar-light py-3">
-
                     <button
                         className="navbar-toggler order-0 me-3"
                         type="button"
@@ -73,7 +85,6 @@ export function Header() {
                     </Link>
 
                     <div className="d-flex align-items-center gap-4 ms-auto order-2 order-lg-3">
-
                         {/* CART */}
                         <div className="cart-container" ref={cartRef}>
                             <img
@@ -83,7 +94,9 @@ export function Header() {
                                 onClick={toggleCart}
                                 style={{ pointerEvents: 'auto' }}
                             />
-                            <span className="cart-count">0</span>
+                            <span className={`cart-count ${cartCount > 0 ? 'show' : ''}`}>
+                                {cartCount}
+                            </span>
 
                             {isCartOpen && (
                                 <div className="cart-dropdown">
@@ -91,7 +104,39 @@ export function Header() {
                                         <h3>Cart</h3>
                                     </div>
                                     <div className="cart-body">
-                                        <p className="empty-cart">Your cart is empty.</p>
+                                        {cartItems.length === 0 ? (
+                                            <p className="empty-cart">Your cart is empty.</p>
+                                        ) : (
+                                            <>
+                                                {cartItems.map((item) => (
+                                                    <div key={item.product._id} className="cart-item">
+                                                        <img
+                                                            src={item.product.image || avatarImage}
+                                                            className="cart-item-image"
+                                                            alt={item.product.name}
+                                                        />
+                                                        <div className="cart-item-details">
+                                                            <div className="cart-item-name">
+                                                                {item.product.name}
+                                                            </div>
+                                                            <div className="cart-item-price">
+                                                                ${item.product.price.toFixed(2)} x {item.quantity}{' '}
+                                                                <span className="total">
+                                                                    ${(item.product.price * item.quantity).toFixed(2)}
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                        <button
+                                                            className="cart-item-delete"
+                                                            onClick={() => removeFromCart(item.product._id)}
+                                                        >
+                                                            <img src={deleteIcon} alt="Delete" />
+                                                        </button>
+                                                    </div>
+                                                ))}
+                                                <button className="checkout-btn">Checkout</button>
+                                            </>
+                                        )}
                                     </div>
                                 </div>
                             )}
@@ -135,10 +180,8 @@ export function Header() {
                                 </div>
                             )}
                         </div>
-
                     </div>
 
-                    {/* COLLAPSE MENU */}
                     <div
                         className="collapse navbar-collapse order-3 order-lg-2"
                         id="navbarCollapse"
@@ -151,7 +194,6 @@ export function Header() {
                             <li className="nav-item"><Link className="nav-link" to="/contact">Contact</Link></li>
                         </ul>
                     </div>
-
                 </nav>
             </div>
         </div>

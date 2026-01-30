@@ -3,8 +3,8 @@ const router = express.Router();
 const cartController = require('../controllers/cart-controller');
 const auth = require('../middleware/auth');
 
-// Add product to cart
-router.post('/add',auth, cartController.addToCart);
+// Add product to cart - Changed route to accept userId as param
+router.post('/:userId', auth, cartController.addToCart);
 
 // Remove product from cart
 router.post('/remove', auth, cartController.removeFromCart);

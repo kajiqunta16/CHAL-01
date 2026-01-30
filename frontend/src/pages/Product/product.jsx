@@ -19,7 +19,7 @@ import cartIcon from "../../images/icon-cart.svg";
 
 import "./product.css";
 
-export function Product({ loadCart }) {
+export function Product({ loadCart, cartItems }) {
     const { productId } = useParams(); // ✅ ONLY place it should exist
 
     const [product, setProduct] = useState(null);
@@ -57,16 +57,19 @@ export function Product({ loadCart }) {
 
         setLoading(true);
         try {
-            await api.post(`/cart/${userId}`, {
-                productId: product?._id ?? "",
-                quantity,
+            const response = await api.post(`/cart/${userId}`, {
+                productId: product._id,
+                quantity: quantity,
             });
+
+            console.log('Cart response:', response.data);
+
             if (loadCart) loadCart();
             alert("Added to cart!");
             setQuantity(0);
         } catch (error) {
-            console.error("Error adding to cart:", error);
-            alert("Failed to add to cart");
+            console.error("Error adding to cart:", error.response?.data || error);
+            alert(error.response?.data?.error || "Failed to add to cart");
         } finally {
             setLoading(false);
         }
@@ -91,7 +94,7 @@ export function Product({ loadCart }) {
     return (
         <>
             <title>Product Page</title>
-            <Header />
+            <Header cartItems={cartItems} />
             <div className="container product-section">
                 <div className="row d-flex align-items-center">
                     {/* LEFT: IMAGES */}

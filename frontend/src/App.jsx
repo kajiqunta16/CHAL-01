@@ -10,6 +10,7 @@ import './App.css'
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [cartItems, setCartItems] = useState([]);
 
   // Check if user is logged in
   useEffect(() => {
@@ -21,10 +22,13 @@ function App() {
   const loadCart = async () => {
     const userId = getUserIdFromToken();
     if (!userId) return;
+
     try {
-      await api.get(`/cart/${userId}`);
+      const response = await api.get(`/cart/${userId}`);
+      setCartItems(response.data.items || []);
     } catch (error) {
       console.error('Error loading cart:', error);
+      setCartItems([]);
     }
   };
 
@@ -50,7 +54,7 @@ function App() {
         path="/product/:productId"
         element={
           <ProtectedRoute>
-            <Product loadCart={loadCart} />
+            <Product loadCart={loadCart} cartItems={cartItems} />
           </ProtectedRoute>
         }
       />
@@ -58,8 +62,7 @@ function App() {
         path="/"
         element={
           <ProtectedRoute>
-            <HomePage loadCart={loadCart} />
-            
+            <HomePage loadCart={loadCart} cartItems={cartItems} />
           </ProtectedRoute>
         }
       />
