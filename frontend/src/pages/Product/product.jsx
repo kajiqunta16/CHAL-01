@@ -94,7 +94,7 @@ export function Product({ loadCart, cartItems }) {
     return (
         <>
             <title>Product Page</title>
-            <Header cartItems={cartItems} />
+            <Header cartItems={cartItems} loadCart={loadCart} />
             <div className="container product-section">
                 <div className="row d-flex align-items-center">
                     {/* LEFT: IMAGES */}

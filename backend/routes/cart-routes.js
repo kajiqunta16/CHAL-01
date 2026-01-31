@@ -6,10 +6,12 @@ const auth = require('../middleware/auth');
 // Add product to cart - Changed route to accept userId as param
 router.post('/:userId', auth, cartController.addToCart);
 
-// Remove product from cart
-router.post('/remove', auth, cartController.removeFromCart);
+// Remove product ✅ FIXED
+router.post('/remove/:userId', auth, cartController.removeFromCart);
 
-// Get user's cart
+router.post('/decrease/:userId', auth, cartController.decreaseQuantity);
+
+// Get cart
 router.get('/:userId', auth, cartController.getCart);
 
 module.exports = router;

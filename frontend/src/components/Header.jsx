@@ -7,7 +7,7 @@ import cartIcon from "../images/icon-cart.svg";
 import avatarImage from "../images/image-avatar.png";
 import deleteIcon from "../images/icon-delete.svg";
 
-export function Header({ cartItems = [] }) {
+export function Header({ cartItems = [], loadCart = [] }) {
     const [isCartOpen, setIsCartOpen] = useState(false);
     const [isProfileOpen, setIsProfileOpen] = useState(false);
     const navigate = useNavigate();
@@ -31,12 +31,43 @@ export function Header({ cartItems = [] }) {
         setIsCartOpen(false);
     };
 
+    const increaseQuantity = async (productId) => {
+        const userId = getUserIdFromToken();
+        if (!userId) return;
+
+        try {
+            await api.post(`/cart/${userId}`, {
+                productId,
+                quantity: 1,
+            });
+            loadCart();
+        } catch (error) {
+            console.error("Increase failed:", error);
+        }
+    };
+
+    const decreaseQuantity = async (productId) => {
+        const userId = getUserIdFromToken();
+        if (!userId) return;
+
+        try {
+            await api.post(`/cart/decrease/${userId}`, {
+                productId,
+            });
+            loadCart();
+        } catch (error) {
+            console.error("Decrease failed:", error);
+        }
+    };
+
     const removeFromCart = async (productId) => {
         const userId = getUserIdFromToken();
         if (!userId) return;
 
         try {
-            await api.post('/cart/remove', { userId, productId });
+            await api.post(`/cart/remove/${userId}`, {
+                productId,
+            });
             window.location.reload(); // Reload to refresh cart
         } catch (error) {
             console.error('Error removing from cart:', error);
@@ -125,6 +156,9 @@ export function Header({ cartItems = [] }) {
                                                                     ${(item.product.price * item.quantity).toFixed(2)}
                                                                 </span>
                                                             </div>
+                                                            <button onClick={() => decreaseQuantity(item.product._id)}>-</button>
+                                                            <span>{item.quantity}</span>
+                                                            <button onClick={() => increaseQuantity(item.product._id)}>+</button>
                                                         </div>
                                                         <button
                                                             className="cart-item-delete"

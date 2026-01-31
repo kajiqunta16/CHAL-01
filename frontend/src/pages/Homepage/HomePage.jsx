@@ -4,7 +4,7 @@ import { Header } from "../../components/Header";
 import { api } from "../../config/api";
 import "./HomePage.css";
 
-export function HomePage({ cartItems }) {
+export function HomePage({ cartItems , loadCart }) {
     const [products, setProducts] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
@@ -31,7 +31,7 @@ export function HomePage({ cartItems }) {
     return (
         <>
             <title>Home Page</title>
-            <Header cartItems={cartItems} />
+            <Header cartItems={cartItems} loadCart={loadCart} />
             
             <div className="homepage-container">
                 <div className="container">
